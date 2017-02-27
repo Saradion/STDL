@@ -333,8 +333,13 @@ and
 (*      -> (ValueType * memory)                                                 *)
 (* .............................................................................*)
 
-(* ...............A COMPLETER .......................................*)
-ruleRead expr mem env = ((ErrorValue TypeMismatchError),mem)
+ruleRead expr mem env = let (vexpr, vmem) = (value_of_expr (expr, mem) env) in
+    match vexpr with
+    | (ErrorValue _) as result -> (result, vmem)
+    | (ReferenceValue ref) -> (match lookforMem ref env with
+        | NotFound -> ((ErrorValue (UnknownReferenceError ref)), vmem)
+        | (Found eval) -> (eval, vmem))
+    | _-> ((ErrorValue TypeMismatchError), vmem)
 
 and
 (* .............................................................................*)
@@ -342,8 +347,14 @@ and
 (*      -> (ValueType * memory)                                                 *)
 (* .............................................................................*)
 
-ruleWrite refexpr valexpr mem env = ((ErrorValue TypeMismatchError),mem)
-(* ...............A COMPLETER .......................................*)
+ruleWrite refexpr valexpr mem env = let (vexpr, vmem) = (value_of_expr (refexpr, mem) env) in
+    match vexpr with
+    | (ErrorValue _) as result -> (result, vmem);
+    | (ReferenceValue ref) -> (let (value, fmem) = (value_of_expr (valexpr, vmem) env) in
+        match value with
+        | (ErrorValue _) as result -> (result, fmem)
+        | _ -> (NullValue, (ref, value)::fmem))
+    | _ -> ((ErrorValue TypeMismatchError), vmem)
 
 and
 (* .............................................................................*)
