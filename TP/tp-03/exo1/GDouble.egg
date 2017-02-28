@@ -1,0 +1,54 @@
+option auto= true;
+option version = 0.0.1 ;
+option k=1;
+
+syn val : DOUBLE for S ; 
+syn val : DOUBLE for SI ;
+syn val : DOUBLE for I ;
+syn depth : DOUBLE for SI ;
+syn depth : DOUBLE for I ;
+
+sugar  point  is    "\.";
+term   chiffre  is  "[0-9]";
+space      separateur       is    "[\r\n\t ]+" ;
+
+S -> I point I #val ;
+
+#val {
+    local
+    do
+        S^val := I^val + (I1^val * Math.pow(10, - I1^depth));
+    end
+}
+
+I -> chiffre SI #val ;
+
+#val {
+    local
+    do
+        I^val := Integer.parseInt(chiffre^txt) * Math.pow(10, SI^depth) + SI^val;
+        I^depth := SI^depth + 1;
+    end
+}
+
+SI -> chiffre SI #val ;
+
+#val {
+    local
+    do
+        SI^val := Integer.parseInt(chiffre^txt) * Math.pow(10, SI1^depth) + SI1^val;
+        SI^depth := SI1^depth + 1;
+    end
+}
+
+SI -> #val ;
+
+#val {
+    local
+    do
+        SI^val := 0;
+        SI^depth := 0;
+    end
+}
+
+end
