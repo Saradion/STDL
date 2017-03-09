@@ -1,5 +1,5 @@
 SRC = Lex.ml Scanner.ml Ast.ml Syntax.ml Semantics.ml Types.ml Main.ml 
-all: compute
+all: compute clean
 
 Scanner.ml : Scanner.mll
 	ocamllex Scanner.mll
@@ -9,5 +9,5 @@ compute: $(SRC)
 run:
 	./compute ex/fact.mml
 clean:
-	rm -f *.cm* compute Scanner.ml
+	rm -f *.cm* Scanner.ml
 
