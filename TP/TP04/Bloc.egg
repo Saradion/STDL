@@ -131,14 +131,11 @@ Instruction -> identificateur affectation Expression point_virgule #ast ;
 
 Instruction -> si parenthese_ouvrante Expression parenthese_fermante Bloc SuiteConditionnelle #ast ;
 #ast {
-    local
-        nonempty : boolean ;
     do
-        nonempty := SuiteConditionnelle^ast.instructions().hasNext();
-        if nonempty then
-            Instruction^ast := Instruction^factory.createConditional(Expression^ast, Bloc^ast, SuiteConditionnelle^ast);
-        else
+        if (SuiteConditionnelle^ast = null) then
             Instruction^ast := Instruction^factory.createConditional(Expression^ast, Bloc^ast);
+        else
+            Instruction^ast := Instruction^factory.createConditional(Expression^ast, Bloc^ast, SuiteConditionnelle^ast);
         end
     end
 }
@@ -146,7 +143,7 @@ Instruction -> si parenthese_ouvrante Expression parenthese_fermante Bloc SuiteC
 SuiteConditionnelle -> #ast ;
 #ast {
     do
-        SuiteConditionnelle^ast := SuiteConditionnelle^factory.createBlock();
+        SuiteConditionnelle^ast := null;
     end
 }
 
@@ -154,6 +151,8 @@ SuiteConditionnelle ->sinon Bloc #ast ;
 #ast {
     do
         SuiteConditionnelle^ast := Bloc^ast;
+    end
+}
 
 Instruction -> tant_que parenthese_ouvrante Expression parenthese_fermante Bloc #ast ;
 #ast {
