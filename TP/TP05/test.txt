@@ -1,5 +1,9 @@
 test {
-   int i = 1;
-   const int j = 2;
-   i = i + j * 3;
+    int i = 1;
+    const int j = 2;
+    if ( i == 1 ) {
+        int j = 3;
+        j = k;
+    }
+    i = i + j * 3;
 }

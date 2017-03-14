@@ -126,50 +126,52 @@ Instructions -> Instruction Instructions #ast ;
     end
 }
 
-Instruction -> Type identificateur #check affectation Expression point_virgule #ast;
-#check {
-    do
-        write(Instruction^tds);
-        if (Instruction^tds.contains(identificateur^txt)) then
-            error(P_02, identificateur^txt);
-        end
-    end
-}
-
+Instruction -> Type identificateur affectation Expression point_virgule #ast;
 #ast {
     local
         varDecl : VariableDeclaration;
     do 
-        varDecl := Instruction^factory.createVariableDeclaration(identificateur^txt, Type^ast, Expression^ast);
-        Instruction^tds.register(varDecl);
-        Instruction^ast := Instruction^factory.createAssignment(varDecl, Expression^ast);
-    end
-}
-
-Instruction -> identificateur #check affectation Expression point_virgule #ast ;
-#check {
-    do
-        write(Instruction^tds);
-
-        if (!Instruction^tds.knows(identificateur^txt)) then
-            error(P_01, identificateur^txt);
+        if (Instruction^tds.contains(identificateur^txt)) then
+            error(P_02, identificateur^txt);
+        else
+            varDecl := Instruction^factory.createVariableDeclaration(identificateur^txt, Type^ast, Expression^ast);
+            Instruction^tds.register(varDecl);
+            Instruction^ast := Instruction^factory.createAssignment(varDecl, Expression^ast);
         end
     end
 }
+
+Instruction -> identificateur affectation Expression point_virgule #ast ;
 #ast {
+    local
+        decl : Optional<Declaration>;
+        fdecl : Declaration;
     do
-        if (Instruction^tds.knows(identificateur^txt)) then
-            Instruction^ast := Instruction^factory.createAssignment(identificateur^txt, Expression^ast);
-        else
+        if (!Instruction^tds.knows(identificateur^txt)) then
             error(P_01, identificateur^txt);
+        else 
+            decl := Instruction^tds.get(identificateur^txt);
+            fdecl := decl.get();
+            match fdecl
+                with ConstantDeclaration then error(P_03, identificateur^txt);
+                with VariableDeclaration then Instruction^ast := Instruction^factory.createAssignment(fdecl, Expression^ast);
+            end 
         end
     end
 }
 
 Instruction -> constante Type identificateur affectation Valeur point_virgule #ast ;
 #ast {
+    local
+        cstDecl : ConstantDeclaration ;
     do
-        Instruction^ast := Instruction^factory.createConstantDeclaration(identificateur^txt, Type^ast, Valeur^ast);
+        if (Instruction^tds.contains(identificateur^txt)) then
+            error(P_02, identificateur^txt);
+        else
+            cstDecl := Instruction^factory.createConstantDeclaration(identificateur^txt, Type^ast, Valeur^ast);
+            Instruction^tds.register(cstDecl);
+            Instruction^ast := cstDecl;
+        end
     end
 }
 
@@ -364,10 +366,22 @@ end
 -- }
 
 Facteur -> identificateur #ast ;  
-#ast { 
-do  
-   Facteur^ast := Facteur^factory.createVariableUse(identificateur^txt);  
-end  
+#ast {
+    local
+        decl : Optional<Declaration>;
+        fdecl : Declaration;
+    do 
+        if (!Facteur^tds.knows(identificateur^txt)) then
+            error(P_01, identificateur^txt);
+        else
+            decl := Facteur^tds.get(identificateur^txt);
+            fdecl := decl.get();
+            match fdecl 
+                with VariableDeclaration then Facteur^ast := Facteur^factory.createVariableUse(fdecl);
+                with ConstantDeclaration then Facteur^ast := fdecl.getValue();
+            end
+        end
+    end  
 }
 
 Facteur -> inferieur Expression virgule Expression superieur #ast ;

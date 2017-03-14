@@ -1,4 +1,4 @@
-EGGJAR=~/n7/2A/STDL/Egg/eggc-5.4.1.jar
+EGGJAR=../../Egg/eggc-5.4.1.jar
 JDIR=/usr/bin
 JAVAC=$(JDIR)/javac $(JOPTS)
 JAVA=$(JDIR)/java
@@ -14,7 +14,7 @@ legg :
 
 compile :
 	cd egg && \
-	$(JAVAC) -classpath $(EGGJAR):. *.java&& \
+	$(JAVAC) -classpath ../$(EGGJAR):. *.java&& \
 	cd .. && \
 	$(JAVAC) -classpath $(EGGJAR):. Main.java
 
