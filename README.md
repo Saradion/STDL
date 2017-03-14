@@ -9,13 +9,13 @@ et ça marche.
 Sommaire des TP :
 
 
-TP01 : Interpretation MiniML sans effet de bord
-TP02 : Interpretation MiniML avec effet de bord (NB, ya pas le typage ici j'ai oublié de le terminer)
-TP03 : Intro à Egg avec GDouble
-TP04 : Construction de l'AST pour BLOC
-TP05 : Ajout de la TDS pour BLOC
+- TP01 : Interpretation MiniML sans effet de bord
+- TP02 : Interpretation MiniML avec effet de bord (NB, ya pas le typage ici j'ai oublié de le terminer)
+- TP03 : Intro à Egg avec GDouble
+- TP04 : Construction de l'AST pour BLOC
+- TP05 : Ajout de la TDS pour BLOC
 
-Soon (tm) : TP06, Typage de BLOC
+- Soon (tm) : TP06, Typage de BLOC
 
 Les makefiles ont été un peu tripatouillé vis-à-vis de ceux fournis.
 
