@@ -6,7 +6,10 @@ test {
     typedef struct P2 {int f1; int f2;} F_struct;
 
     F_struct test_struct = {1, 2};
+    L test_struct2 = {1,1};
 
+    test_struct2.f1 = test_struct.m;
+    test_struct = test_struct2;
     while (i <= 1) {
         i = i + j;
     }
