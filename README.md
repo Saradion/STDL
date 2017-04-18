@@ -14,8 +14,8 @@ Sommaire des TP :
 - TP03 : Intro à Egg avec GDouble
 - TP04 : Construction de l'AST pour BLOC
 - TP05 : Ajout de la TDS pour BLOC
-
-- Soon (tm) : TP06, Typage de BLOC
+- TP06 : Typage de BLOC
+- Soon (TM) - TP07 : Génération de code TAM
 
 Les makefiles ont été un peu tripatouillé vis-à-vis de ceux fournis.
 
