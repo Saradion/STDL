@@ -18,6 +18,8 @@ import fr.n7.stl.tam.ast.TAMInstruction;
  *
  */
 public class TAMFactoryImpl implements TAMFactory {
+	
+	private static int labelNumber = 0;
 
 	/* (non-Javadoc)
 	 * @see fr.n7.stl.tam.ast.TAMFactory#createFragment()
@@ -289,6 +291,12 @@ public class TAMFactoryImpl implements TAMFactory {
 			_local.add(_instruction);
 		}
 		return _local;
+	}
+
+	@Override
+	public int createLabelNumber() {
+		labelNumber++;
+		return labelNumber;
 	}
 
 }

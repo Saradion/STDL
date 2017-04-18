@@ -17,10 +17,22 @@ public interface Fragment {
 	public void add(TAMInstruction _instruction);
 	
 	/**
-	 * Sets the label of the first TAM instruction of the fragment.
-	 * @param _label Label that is set to the first TAM instruction of the fragment.
+	 * Adds a prefix comment to the first TAM instruction of the fragment.
+	 * @param _comment Comment that is added to the first TAM instruction of the fragment.
 	 */
-	public void set(String _label);
+	public void addComment(String _comment);
+	
+	/**
+	 * Adds a prefix label to the first TAM instruction of the fragment.
+	 * @param _label Label that is added to the first TAM instruction of the fragment.
+	 */
+	public void addPrefix(String _label);
+	
+	/**
+	 * Adds a suffix label to the last TAM instruction of the fragment.
+	 * @param _label Label that is added to the last TAM instruction of the fragment.
+	 */
+	public void addSuffix(String _label);
 	
 	/**
 	 * Add the instructions from the provided fragment at the end of the fragment.

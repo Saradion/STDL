@@ -44,6 +44,7 @@ public class FragmentImpl implements Fragment {
 		this.instructions.addAll(((FragmentImpl)_fragment).instructions);
 	}
 	
+	@Override
 	public String toString() {
 		String _result = "";
 		for (TAMInstruction _instruction : this.instructions) {
@@ -51,13 +52,30 @@ public class FragmentImpl implements Fragment {
 		}
 		return _result;
 	}
+	
+	public void addComment(String _comment) {
+		if (this.instructions.size() > 0) { 
+			this.instructions.get(0).addComment(_comment);
+		} else {
+			throw new IllegalArgumentException( "Fragment size is 0. No comment can be added.");
+		}
+	}
 
 	@Override
-	public void set(String _label) {
+	public void addPrefix(String _label) {
 		if (this.instructions.size() > 0) { 
-			this.instructions.get(0).set(_label);
+			this.instructions.get(0).addPrefix(_label);
 		} else {
-			throw new IllegalArgumentException( "Fragment size is 0. No label can be set.");
+			throw new IllegalArgumentException( "Fragment size is 0. No prefix label can be added.");
+		}
+	}
+	
+	@Override
+	public void addSuffix(String _label) {
+		if (this.instructions.size() > 0) { 
+			this.instructions.get(this.instructions.size()-1).addSuffix(_label);
+		} else {
+			throw new IllegalArgumentException( "Fragment size is 0. No suffix label can be added.");
 		}
 	}
 

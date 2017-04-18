@@ -3,6 +3,8 @@
  */
 package fr.n7.stl.tam.ast;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -207,33 +209,71 @@ public enum Library implements TAMInstruction {
 	S2I;
 	
 	/**
+	 * Each TAM instruction can have prefix comments used for relating this instruction 
+	 * to the block source code.
+	 */
+	protected List<String> comments;
+	
+	/**
+	 * Each TAM instruction can have prefix labels used for computing locations to that instruction 
+	 * for JUMP and CALL instructions.
+	 */
+	protected List<String> prefixes;
+	
+	/**
+	 * Each TAM instruction can have suffix labels used for computing locations following that instruction 
+	 * for JUMP and CALL instructions.
+	 */
+	protected List<String> suffixes;
+	
+	/**
 	 * Constructor that assigns an empty label for each enum value object.
 	 */
 	private Library() {
-		this.label = Optional.empty(); 
+		this.comments = new LinkedList<String>();
+		this.prefixes = new LinkedList<String>();
+		this.suffixes = new LinkedList<String>();
 	}
-	
-	/**
-	 * Attribute that store the label of the instruction.
-	 */
-	private Optional<String> label;
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Enum#toString()
 	 */
 	public String toString() {
-		if (this.label.isPresent()) {
-			return this.label.get() + " SUBR " + this.name();
-		} else {
-			return "SUBR " + this.name();
+		String _result = "";
+		for (String _comment : this.comments) {
+			_result += ";" + _comment + "\n";
 		}
+		for (String _label : this.prefixes) {
+			_result += _label + ":\n";
+		}
+		_result += " SUBR " + this.name();
+		for (String _label : this.suffixes) {
+			_result += _label + ":\n";
+		}
+		return _result;
+	}
+	
+	/* (non-Javadoc)
+	 * @see fr.n7.stl.tam.ast.TAMInstruction#addComment(java.lang.String)
+	 */
+	@Override
+	public void addComment(String _comment) {
+		this.comments.add(_comment);		
 	}
 
 	/* (non-Javadoc)
-	 * @see fr.n7.stl.tam.ast.TAMInstruction#set(fr.n7.stl.tam.ast.Label)
+	 * @see fr.n7.stl.tam.ast.TAMInstruction#addPrefix(java.lang.String)
 	 */
 	@Override
-	public void set(String _label) {
-		this.label = Optional.of(_label);
+	public void addPrefix(String _label) {
+		this.prefixes.add(_label);		
+	}
+
+	/* (non-Javadoc)
+	 * @see fr.n7.stl.tam.ast.TAMInstruction#addSuffix(java.lang.String)
+	 */
+	@Override
+	public void addSuffix(String _label) {
+		this.suffixes.add(_label);				
 	}
 }

@@ -235,5 +235,7 @@ public interface TAMFactory {
 		default: return null;
 		}
 	}
+	
+	public int createLabelNumber();
 
 }

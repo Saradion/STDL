@@ -3,6 +3,8 @@
  */
 package fr.n7.stl.tam.ast.impl;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 import fr.n7.stl.tam.ast.Register;
@@ -21,10 +23,22 @@ class TAMInstructionImpl implements TAMInstruction {
 	private TAMInstructionKind kind;
 	
 	/**
-	 * Each TAM instruction can have a label using for computing locations to that instruction 
+	 * Each TAM instruction can have prefix comments used for relating this instruction 
+	 * to the block source code.
+	 */
+	protected List<String> comments;
+	
+	/**
+	 * Each TAM instruction can have prefix labels used for computing locations to that instruction 
 	 * for JUMP and CALL instructions.
 	 */
-	protected Optional<String> label;
+	protected List<String> prefixes;
+	
+	/**
+	 * Each TAM instruction can have suffix labels used for computing locations following that instruction 
+	 * for JUMP and CALL instructions.
+	 */
+	protected List<String> suffixes;
 	
 	/**
 	 * Some TAM instructions manipulate explicitly the memory (LOAD and STORE instructions).
@@ -52,8 +66,6 @@ class TAMInstructionImpl implements TAMInstruction {
 	 */
 	protected Optional<Integer> size;
 
-
-
 	/**
 	 * Construction for a full TAM instruction with kind, label, location and size.
 	 * @param _kind Kind for the TAM instruction.
@@ -67,7 +79,12 @@ class TAMInstructionImpl implements TAMInstruction {
 			Optional<Register> _register, Optional<Integer> _offset, 
 			Optional<String> _target, Optional<Integer> _size) {
 		this.kind = _kind;
-		this.label = _label;
+		this.comments = new LinkedList<String>();
+		this.prefixes = new LinkedList<String>();
+		this.suffixes = new LinkedList<String>();
+		if (_label.isPresent()) {
+			this.prefixes.add(_label.get());
+		}
 		this.register = _register;
 		this.offset = _offset;
 		this.target = _target;
@@ -75,19 +92,46 @@ class TAMInstructionImpl implements TAMInstruction {
 	}
 	
 	/* (non-Javadoc)
-	 * @see fr.n7.stl.tam.ast.TAMInstruction#add(fr.n7.stl.tam.ast.Label)
+	 * @see fr.n7.stl.tam.ast.TAMInstruction#addPrefix(fr.n7.stl.tam.ast.Label)
 	 */
 	@Override
-	public void set(String _label) {
-		this.label = Optional.of(_label);
+	public void addPrefix(String _label) {
+		this.prefixes.add(_label);
+	}
+	
+	/* (non-Javadoc)
+	 * @see fr.n7.stl.tam.ast.TAMInstruction#addSuffix(fr.n7.stl.tam.ast.Label)
+	 */
+	@Override
+	public void addSuffix(String _label) {
+		this.suffixes.add(_label);
+	}
+	
+	/* (non-Javadoc)
+	 * @see fr.n7.stl.tam.ast.TAMInstruction#addComment(java.lang.String)
+	 */
+	@Override
+	public void addComment(String _comment) {
+		this.comments.add(_comment);		
 	}
 	
 	public String toString() {
-		return ((this.label.isPresent())?(this.label.get() + " : "):"") 
-				+ this.kind
-				+ ((this.size.isPresent())?(" (" + this.size.get() + ")"):"")
-				+ ((this.offset.isPresent())?(" " + this.offset.get()):"")
-				+ ((this.register.isPresent())?("[" + this.register.get() + "]"):"");
+		String _result = "";
+		for (String _comment : this.comments) {
+			_result += ";" + _comment + "\n";
+		}
+		for (String _label : this.prefixes) {
+			_result += _label + ":\n";
+		}
+		_result += this.kind;
+		_result += ((this.size.isPresent())?(" (" + this.size.get() + ")"):"");
+		_result += ((this.offset.isPresent())?(" " + this.offset.get()):"");
+		_result += ((this.register.isPresent())?("[" + this.register.get() + "]"):"");
+		_result += ((this.target.isPresent())?(" (" + this.target.get() + ")"):"");
+		for (String _label : this.suffixes) {
+			_result += "\n" + _label + ":";
+		}
+		return _result;
 	}
 
 }
